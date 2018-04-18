@@ -1,7 +1,7 @@
 'use strict'
 
 const fs = require('fs')
-// const http = require('http')
+const http = require('http')
 const https = require('https')
 const privateKey = fs.readFileSync('key.pem', 'utf8')
 const certificate = fs.readFileSync('certificate.pem', 'utf8')
@@ -50,14 +50,17 @@ app.post('/doCompare', async (req, res, next) => {
     }
 })
 
-// const httpServer = http.createServer(app)
-const httpsServer = https.createServer(credentials, app)
+const httpServer = http.createServer(app)
+// const httpsServer = https.createServer(credentials, app)
 
-// httpServer.listen(8080)
-const PORT = process.env.PORT || 8443
-httpsServer.listen(PORT, () => {
-    console.log(`listening on ${PORT}`)
+const PORT = process.env.PORT || 5000
+httpServer.listen(PORT, () => {
+    console.log(`HTTP listening on ${PORT}`)
 })
+
+// httpsServer.listen(PORT, () => {
+//     console.log(`listening on ${PORT}`)
+// })
 
 
 function compareFacesPromiseRaw(sourceImageBuffer, targetImageBuffer) {
