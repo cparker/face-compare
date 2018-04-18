@@ -1,7 +1,7 @@
 {
   "name": "image-compare",
   "version": "0.0.1",
-  "description": "compare faces using AWS rekognition API",
+  "description": "compare faces using AWS rekognition API ",
   "main": "server.js",
   "dependencies": {
     "aws-sdk": "^2.224.1",
