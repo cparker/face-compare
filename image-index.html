@@ -1,0 +1,82 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>image compare</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+
+  <style>
+    html {
+      padding:0;
+      margin:0;
+      height:99%;
+    }
+
+    body {
+      padding:0;
+      margin:0;
+      height:99%;
+    }
+
+    #player {
+      object-fit:contain;
+      border: 1px solid red;
+      width:80%;
+    }
+
+    .video-contain {
+      object-fit: contain;
+      border: 1px solid green;
+      max-width:100%;
+    }
+  </style>
+  <head>
+  <body>
+
+    <div class="video-contain">
+      <video id="player" muted autoplay playsinline></video>
+    </div>
+    <button id="capture">Capture</button>
+    <canvas id="canvas" width=320 height=240></canvas>
+    hello
+    <script>
+      window.onload = () => {
+        const player = document.getElementById('player');
+
+        player.style.width = document.width + 'px';
+//        player.style.height = document.height/2 + 'px';     
+        player.setAttribute('autoplay', '');
+        player.setAttribute('muted', '');
+        player.setAttribute('playsinline', '');
+
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+        const captureButton = document.getElementById('capture');
+
+        const constraints = {
+          audio: false,
+           video: {
+               facingMode: 'user'
+           }
+        };
+
+        captureButton.addEventListener('click', () => {
+          // Draw the video frame to the canvas.
+          context.drawImage(player, 0, 0, canvas.width, canvas.height);
+        });
+
+        // Attach the video stream to the video element and autoplay.
+        navigator.mediaDevices.getUserMedia(constraints)
+          .then((stream) => {
+            player.srcObject = stream;
+          })
+          .catch(err => {
+
+          })
+      }
+
+    </script>
+  </body>
+</html>

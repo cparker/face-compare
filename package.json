@@ -1,0 +1,23 @@
+{
+  "name": "image-compare",
+  "version": "0.0.1",
+  "description": "compare faces using AWS rekognition API",
+  "main": "server.js",
+  "dependencies": {
+    "aws-sdk": "^2.224.1",
+    "body-parser": "^1.18.2",
+    "express": "^4.16.3"
+  },
+  "engines": {
+    "node": "8"
+  },
+  "devDependencies": {
+    "eslint": "^4.19.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "cp@cjparker.us",
+  "license": "MIT"
+}

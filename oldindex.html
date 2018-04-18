@@ -1,0 +1,91 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <title>image compare</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <link rel="stylesheet" href="/main.css">
+
+  <script defer src="https://use.fontawesome.com/releases/v5.0.4/js/all.js"></script>
+</head>
+
+<body>
+  <img class='sample-headshot' src='/profile.jpg' style='display:none' />
+  <!-- VIDEO PREVIEW -->
+  <div class='preview'>
+    <div class='top-message'>
+      Tap video to take <span class='snapshot-index'></span> snapshot
+    </div>
+    <video class='video-preview' muted autoplay playsinline></video>
+  </div>
+
+  <!-- SIDE BY SIDE PAGE -->
+  <div class='results-column'>
+    <div class='results'>
+      <div class='left-image'>
+        <canvas></canvas>
+      </div>
+      <div class='right-image'>
+        <canvas></canvas>
+      </div>
+    </div>
+    <!-- BOTTOM MENU -->
+    <input id='upload' type="file" accept="image/*" style="display:none"/>
+    <div class='bottom-menu'>
+
+      <!-- LEFT -->
+      <div class='left'>
+        <div class='icon image-files'>
+          <i class="fas fa-images fa-3x"></i>
+        </div>
+        <div class='icon main-camera'><i class="fas fa-camera fa-3x"></i></div>
+        <div class='icon'>
+          <span class='fa-layers fa-fw'>
+            <i class='fas fa-camera fa-2x' data-fa-transform='down-5'></i>
+            <i class='fas fa-arrows-alt-h fa-2x' data-fa-transform='down-17'></i>
+          </span>
+        </div>
+      </div>
+
+      <!-- RIGHT -->
+      <div class='right'>
+        <div class='icon image-files'>
+          <i class="fas fa-images fa-3x"></i>
+        </div>
+        <div class='icon main-camera'><i class="fas fa-camera fa-3x"></i></div>
+        <div class='icon'>
+          <span class='fa-layers fa-fw'>
+            <i class='fas fa-camera fa-2x' data-fa-transform='down-5'></i>
+            <i class='fas fa-arrows-alt-h fa-2x' data-fa-transform='down-17'></i>
+          </span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!--script>
+        window.onload = () => {
+          const vidElm = document.querySelector('#vid')
+
+          navigator.mediaDevices.getUserMedia(constraints)
+            .then((stream) => {
+              vidElm.srcObject = stream;
+              //vidElm.style.width = '100%'
+            })
+            .catch(err => {
+
+            })
+        }
+      </script-->
+
+  <script src='/main.js'></script>
+
+</body>
+
+</html>

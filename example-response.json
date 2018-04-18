@@ -1,0 +1,64 @@
+{
+    "FaceMatches": [
+        {
+            "Face": {
+                "BoundingBox": {
+                    "Height": 0.6437534093856812,
+                    "Left": 0.21801728010177612,
+                    "Top": 0.23458810150623322,
+                    "Width": 0.48128342628479004
+                },
+                "Confidence": 99.95140838623047,
+                "Landmarks": [
+                    {
+                        "Type": "eyeLeft",
+                        "X": 0.3683911859989166,
+                        "Y": 0.4907946288585663
+                    },
+                    {
+                        "Type": "eyeRight",
+                        "X": 0.5295717120170593,
+                        "Y": 0.46507328748703003
+                    },
+                    {
+                        "Type": "nose",
+                        "X": 0.41234979033470154,
+                        "Y": 0.5522554516792297
+                    },
+                    {
+                        "Type": "mouthLeft",
+                        "X": 0.3967978358268738,
+                        "Y": 0.7267074584960938
+                    },
+                    {
+                        "Type": "mouthRight",
+                        "X": 0.5180039405822754,
+                        "Y": 0.7180525064468384
+                    }
+                ],
+                "Pose": {
+                    "Pitch": 20.57682228088379,
+                    "Roll": -6.029838562011719,
+                    "Yaw": -17.1005802154541
+                },
+                "Quality": {
+                    "Brightness": 49.612178802490234,
+                    "Sharpness": 99.9305191040039
+                }
+            },
+            "Similarity": 99
+        }
+    ],
+    "SourceImageFace": {
+        "BoundingBox": {
+            "Height": 0.4964539110660553,
+            "Left": 0.36824876070022583,
+            "Top": 0.452809602022171,
+            "Width": 0.3723404109477997
+        },
+        "Confidence": 99.86994934082031
+    },
+    "SourceImageOrientationCorrection": "ROTATE_0",
+    "TargetImageOrientationCorrection": "ROTATE_0",
+    "UnmatchedFaces": []
+}
