@@ -108,6 +108,10 @@ function showVideoPreview() {
     navigator.mediaDevices.getUserMedia(constraints)
         .then((stream) => {
             page.videoPreview.srcObject = stream
+            page.videoPreview.addEventListener('loadedmetadata', x => {
+                console.log('loadmetadata', x)
+                page.videoPreview.play()
+            })
         })
         .catch(err => {
             console.log('caught video error', err)
