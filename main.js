@@ -12,13 +12,16 @@ function init() {
     page.computedImageWidth = divWidth
     page.computedImageHeight = computedHeight
 
-    page.leftImageCanvasElm.width = page.leftImageDivElm.clientWidth
-    page.leftImageCanvasElm.height = computedHeight
-    page.leftImageCanvasCtx.drawImage(page.sampleHeadshotElm, 0, 0, divWidth, computedHeight)
+    console.log(`computed w h ${page.computedImageWidth} ${page.computedImageHeight}`)
 
-    page.rightImageCanvasElm.width = page.rightImageDivElm.clientWidth
-    page.rightImageCanvasElm.height = computedHeight
-    page.rightImageCanvasCtx.drawImage(page.sampleHeadshotElm, 0, 0, divWidth, computedHeight)
+    page.leftImageDivElm.style.height = `${page.sampleHeadshotElm.height * (divWidth / page.sampleHeadshotElm.width)}px`
+    page.rightImageDivElm.style.height = `${page.sampleHeadshotElm.height * (divWidth / page.sampleHeadshotElm.width)}px`
+    // page.leftImageCanvasCtx.drawImage(page.sampleHeadshotElm, 0, 0, divWidth, computedHeight)
+    page.leftImageCanvasCtx.drawImage(page.sampleHeadshotElm, 0, 0, page.leftImageCanvasElm.width, page.leftImageCanvasElm.height)
+
+    // page.rightImageCanvasElm.width = page.sampleHeadshotElm.width
+    // page.rightImageCanvasElm.height = page.sampleHeadshotElm.height
+    page.rightImageCanvasCtx.drawImage(page.sampleHeadshotElm, 0, 0, page.rightImageCanvasElm.width, page.rightImageCanvasElm.height)
 
     page.leftImageDivElm.addEventListener('click', handleImageTouch)
     page.rightImageDivElm.addEventListener('click', handleImageTouch)
@@ -131,10 +134,16 @@ mainCameraIcon.addEventListener('click', () => {
 
 function takePicture() {
     const videoCurrentHeight = page.videoPreview.videoHeight
-    const scaledVideoSnapHeight = videoCurrentHeight * (page.computedImageWidth / page.videoPreview.videoWidth)
-    chosenCanvas.height = scaledVideoSnapHeight
+    // const scaledVideoSnapHeight = videoCurrentHeight * (page.computedImageWidth / page.videoPreview.videoWidth)
+    chosenCanvas.width = page.videoPreview.videoWidth
+    chosenCanvas.height = page.videoPreview.videoHeight
+    const newDivHeight = page.videoPreview.videoHeight * (page.computedImageWidth / page.videoPreview.videoWidth)
+    page.leftImageDivElm.style.height = `${newDivHeight}px`
+    page.rightImageDivElm.style.height = `${newDivHeight}px`
     const canvasCtx = chosenCanvas.getContext('2d')
-    canvasCtx.drawImage(page.videoPreview, 0, 0, page.computedImageWidth, scaledVideoSnapHeight)
+    // canvasCtx.drawImage(page.videoPreview, 0, 0, page.computedImageWidth, scaledVideoSnapHeight)
+    // canvasCtx.drawImage(page.videoPreview, 0, 0, chosenCanvas.width, chosenCanvas.height)
+    canvasCtx.drawImage(page.videoPreview, 0, 0)
     showResultsPage()
 }
 
