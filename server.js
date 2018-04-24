@@ -50,6 +50,21 @@ app.post('/doCompare', async (req, res, next) => {
     }
 })
 
+app.post('/savePics', async (req, res, next) => {
+    const leftPicText = req.body.leftImage.toString('utf-8')
+    const leftBase64Text = leftPicText.split('base64,')[1]
+    const leftBase64Data = Buffer.from(leftBase64Text, 'base64')
+
+    const rightPicText = req.body.rightImage.toString('utf-8')
+    const rightBase64Text = rightPicText.split('base64,')[1]
+    const rightBase64Data = Buffer.from(rightBase64Text, 'base64')
+
+    fs.writeFileSync('leftImage.png', leftBase64Data)
+    fs.writeFileSync('rightImage.png', rightBase64Data)
+
+    res.status(201).send('OK')
+})
+
 const httpServer = http.createServer(app)
 // const httpsServer = https.createServer(credentials, app)
 
