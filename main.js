@@ -29,6 +29,11 @@ function init() {
 
     page.mainCameraIcon.addEventListener('click', takePicture)
     page.compareBtn.addEventListener('click', handleCompare)
+
+    page.compareMenuButton.addEventListener('click', handleCompareMenu)
+    page.happySadButton.addEventListener('click', handleHappySadMenu)
+
+    page.happySadCameraIcon.addEventListener('click', handleHappySadTakePicture)
 }
 
 const frontConstraints = {
@@ -43,6 +48,33 @@ const backConstraints = {
     video: {
         facingMode: 'environment'
     }
+}
+
+function handleCompareMenu() {
+    page.mainMenuPage.style.display = 'none'
+    showResultsPage()
+}
+
+function handleHappySadMenu() {
+    page.mainMenuPage.style.display = 'none'
+    page.happySadPage.style.display = 'flex'
+    showHappySadVideoPreview()
+}
+
+function handleHappySadTakePicture() {
+    page.happySadCanvas.width = page.happySadVideoPreview.videoWidth
+    page.happySadCanvas.height = page.happySadVideoPreview.videoHeight
+    // page.happySadCanvas.height = page.happySadVideoPreview.videoHeight * (page.body.clientWidth / page.happySadVideoPreview.videoWidth )
+    page.happySadCanvas.height = 400
+    console.log(`canvas w h ${page.happySadCanvas.width} ${page.happySadCanvas.height}`)
+    console.log(`canvas client w h ${page.happySadCanvas.clientWidth} ${page.happySadCanvas.clientHeight}`)
+    console.log(`canvas scroll w h ${page.happySadCanvas.scrollWidth} ${page.happySadCanvas.scrollHeight}`)
+    console.log(`canvas offset w h ${page.happySadCanvas.offsetWidth} ${page.happySadCanvas.offsetHeight}`)
+
+    const canvasCtx = page.happySadCanvas.getContext('2d')
+    page.happySadCanvasDiv.style.display = 'block'
+    canvasCtx.drawImage(page.happySadVideoPreview, 0, 0)
+    page.happySadVideoPreview.style.display = 'none'
 }
 
 function handleCompare() {
@@ -102,8 +134,43 @@ function showVideoPage() {
 }
 
 function showResultsPage() {
+    // first set display
     page.resultsPage.style.display = 'flex'
     page.previewPage.style.display = 'none'
+
+    // then compute sizes
+    const divWidth = page.leftImageDivElm.clientWidth
+    const computedHeight = getNewImageHeight(page.sampleHeadshotElm, divWidth)
+
+    page.computedImageWidth = divWidth
+    page.computedImageHeight = computedHeight
+
+    console.log(`computed w h ${page.computedImageWidth} ${page.computedImageHeight}`)
+
+    page.leftImageDivElm.style.height = `${page.sampleHeadshotElm.height * (divWidth / page.sampleHeadshotElm.width)}px`
+    page.rightImageDivElm.style.height = `${page.sampleHeadshotElm.height * (divWidth / page.sampleHeadshotElm.width)}px`
+    // page.leftImageCanvasCtx.drawImage(page.sampleHeadshotElm, 0, 0, divWidth, computedHeight)
+    page.leftImageCanvasCtx.drawImage(page.sampleHeadshotElm, 0, 0, page.leftImageCanvasElm.width, page.leftImageCanvasElm.height)
+
+    // page.rightImageCanvasElm.width = page.sampleHeadshotElm.width
+    // page.rightImageCanvasElm.height = page.sampleHeadshotElm.height
+    page.rightImageCanvasCtx.drawImage(page.sampleHeadshotElm, 0, 0, page.rightImageCanvasElm.width, page.rightImageCanvasElm.height)
+
+}
+
+function showHappySadVideoPreview() {
+    const constraints = cameraFrontBack === 'front' ? frontConstraints : backConstraints
+    navigator.mediaDevices.getUserMedia(constraints)
+        .then((stream) => {
+            page.happySadVideoPreview.srcObject = stream
+            page.happySadVideoPreview.addEventListener('loadedmetadata', x => {
+                console.log('loadmetadata', x)
+                page.happySadVideoPreview.play()
+            })
+        })
+        .catch(err => {
+            console.log('caught video error', err)
+        })
 }
 
 function showVideoPreview() {
@@ -194,13 +261,21 @@ function getPageElements() {
     pageObj.resultsPage = document.querySelector('.results-column')
     pageObj.previewPage = document.querySelector('.preview')
     pageObj.videoPreview = document.querySelector('.video-preview')
-    pageObj.mainCameraIcon = document.querySelector('.bottom-menu .main-camera')
+    pageObj.happySadVideoPreview = document.querySelector('.happy-sad-page video')
+    pageObj.mainCameraIcon = document.querySelector('.preview .bottom-menu .main-camera')
     pageObj.imageFilesIcon = document.querySelector('.bottom-menu .image-files')
     pageObj.cameraDirectionBtn = document.querySelector('.bottom-menu .direction')
     pageObj.imageUpload = document.querySelector('#upload')
     pageObj.imageIndexField = document.querySelector('.top-message .snapshot-index')
     pageObj.compareBtn = document.querySelector('.compare')
     pageObj.similarityValue = document.querySelector('.similarityValue')
+    pageObj.mainMenuPage = document.querySelector('.main-menu')
+    pageObj.compareMenuButton = document.querySelector('.menu-item.compare-faces')
+    pageObj.happySadButton = document.querySelector('.menu-item.happy-sad')
+    pageObj.happySadPage = document.querySelector('.happy-sad-page')
+    pageObj.happySadCameraIcon = document.querySelector('.happy-sad-page .bottom-menu .main-camera')
+    pageObj.happySadCanvas = document.querySelector('.happy-sad-page .still')
+    pageObj.happySadCanvasDiv = document.querySelector('.happy-sad-page .happy-sad-still')
     return pageObj
 }
 
