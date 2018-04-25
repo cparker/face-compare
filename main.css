@@ -207,8 +207,9 @@ input[type="submit"],
     position:relative;
     display:flex;
     flex-direction:column;
-    top: 45vh;
     padding:0.4em;
+    color:lightgreen;
+    font-size:1.2em;
 }
 
 .stats .stat {
