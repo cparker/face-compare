@@ -210,6 +210,7 @@ input[type="submit"],
     padding:0.4em;
     color:lightgreen;
     font-size:1.2em;
+    background:rgba(100,100,100,0.6);
 }
 
 .stats .stat {

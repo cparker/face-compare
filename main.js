@@ -81,6 +81,7 @@ function handleHappySadMenu() {
 }
 
 function clearStats() {
+    page.happySadStats.style.display='none'
     while (page.happySadStats.firstChild) {
         page.happySadStats.removeChild(page.happySadStats.firstChild)
     }
@@ -165,6 +166,7 @@ function addStat(label, value) {
 }
 
 function addFaceStats(faceDetails) {
+    page.happySadStats.style.display='flex'
     addStat(`Age Range`, `${faceDetails.AgeRange.Low} - ${faceDetails.AgeRange.High}`)
     addStat(`Gender`, `${faceDetails.Gender.Value} ${faceDetails.Gender.Confidence.toFixed(0)}%`)
     faceDetails.Emotions.forEach(e => {
