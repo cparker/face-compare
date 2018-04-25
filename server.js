@@ -31,6 +31,21 @@ app.use(bodyParser.raw({
     limit: '500mb'
 }))
 
+app.post('/doFaceAnalysis', async (req, res, next) => {
+    const postText = req.body.toString('utf-8')
+    const base64Text = postText.split('base64,')[1]
+    const picData = Buffer.from(base64Text, 'base64')
+
+    let result
+    try {
+        result = await detectFaceAWSPromise(picData)
+        res.status(201).send(result)
+    } catch(err) {
+        console.log('caught exception ', err)
+        res.satus(500).send(err)
+    }
+})
+
 app.post('/doCompare', async (req, res, next) => {
     // console.log(req.body)
     const leftPicText = req.body.leftImage.toString('utf-8')
@@ -99,6 +114,30 @@ function compareFacesPromiseRaw(sourceImageBuffer, targetImageBuffer) {
         })
     })
 }
+
+function detectFaceAWSPromise(picBuffer) {
+    return new Promise((resolve, reject) => {
+
+        let params = {
+            Image: {
+                Bytes: picBuffer
+            },
+            Attributes: ['ALL']
+        }
+
+        rekognition.detectFaces(params, (err, data) => {
+            if (err) {
+                console.log(err, err.stack)
+                reject(err)
+            } else {
+                console.log(JSON.stringify(data, null, 2))
+                resolve(data)
+            }
+        })
+
+    })
+}
+
 
 function compareFacesPromise(sourceFilename, targetFilename) {
     const sourceBuffer = fs.readFileSync(sourceFilename)

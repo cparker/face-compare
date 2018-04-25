@@ -149,8 +149,8 @@ input[type="submit"],
 
 .happy-sad-page video {
     width:100vw;
-    height:100vh;
     position:absolute;
+    top:6vh;
     /* object-fit:none; */
 }
 
@@ -158,11 +158,36 @@ input[type="submit"],
     position:relative;
 }
 
-.happy-sad-page .happy-sad-facegeo {
+.happy-sad-still .face-geo {
     position:absolute;
+    width:100%;
 }
 
 .happy-sad-page .still{
     position:absolute;
     width:100%;
+}
+
+.stats {
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    top: 45vh;
+    padding:0.4em;
+}
+
+.stats .stat {
+    display:flex;
+    flex-direction:row;
+    flex:1;
+}
+
+.stats .stat .label {
+    text-align:right;
+    padding-right:0.5em;
+    min-width:30vw;
+}
+
+.stats .stat .value {
+
 }

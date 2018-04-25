@@ -61,11 +61,15 @@ function handleHappySadMenu() {
     showHappySadVideoPreview()
 }
 
-function handleHappySadTakePicture() {
+async function handleHappySadTakePicture() {
     page.happySadCanvas.width = page.happySadVideoPreview.videoWidth
     page.happySadCanvas.height = page.happySadVideoPreview.videoHeight
+
+    page.happySadFaceGeoCanvas.width = page.happySadVideoPreview.videoWidth
+    page.happySadFaceGeoCanvas.height = page.happySadVideoPreview.videoHeight
+
     // page.happySadCanvas.height = page.happySadVideoPreview.videoHeight * (page.body.clientWidth / page.happySadVideoPreview.videoWidth )
-    page.happySadCanvas.height = 400
+    // page.happySadCanvas.height = 400
     console.log(`canvas w h ${page.happySadCanvas.width} ${page.happySadCanvas.height}`)
     console.log(`canvas client w h ${page.happySadCanvas.clientWidth} ${page.happySadCanvas.clientHeight}`)
     console.log(`canvas scroll w h ${page.happySadCanvas.scrollWidth} ${page.happySadCanvas.scrollHeight}`)
@@ -75,6 +79,90 @@ function handleHappySadTakePicture() {
     page.happySadCanvasDiv.style.display = 'block'
     canvasCtx.drawImage(page.happySadVideoPreview, 0, 0)
     page.happySadVideoPreview.style.display = 'none'
+
+    console.log('drawingCanvasBEFORE', page.happySadFaceGeoCanvas.getContext)
+    page.happySadFaceGeoCanvas.getContext('2d');
+
+
+    const resultJSON = await doHappySadFaceAnalysis(page.happySadCanvas.toDataURL())
+    console.log('resultJSON', resultJSON)
+    if (resultJSON && resultJSON.FaceDetails && resultJSON.FaceDetails.length > 0) {
+        drawFaceLandmarks(resultJSON.FaceDetails[0].Landmarks, page.happySadFaceGeoCanvas)
+        drawFaceBox(resultJSON.FaceDetails[0].BoundingBox, page.happySadFaceGeoCanvas)
+        addFaceStats(resultJSON.FaceDetails[0])
+    }
+}
+
+function drawFaceBox(boundingBox, drawingCanvas) {
+    const faceGeoContext = drawingCanvas.getContext('2d');
+    faceGeoContext.beginPath()
+    faceGeoContext.lineWidth = 2
+    faceGeoContext.strokeStyle = '#0000ff'
+    faceGeoContext.rect(
+        boundingBox.Left * drawingCanvas.width,
+        boundingBox.Top * drawingCanvas.height,
+        boundingBox.Width * drawingCanvas.width,
+        boundingBox.Height * drawingCanvas.height
+    )
+    faceGeoContext.stroke()
+}
+
+function drawFaceLandmarks(landmarks, drawingCanvas) {
+    const faceGeoContext = drawingCanvas.getContext('2d');
+
+    (landmarks || []).forEach(point => {
+        let xCoord = Math.floor(point.X * drawingCanvas.width)
+        let yCoord = Math.floor(point.Y * drawingCanvas.height)
+        faceGeoContext.beginPath()
+        faceGeoContext.arc(xCoord, yCoord, 2, 0, 2 * Math.PI, false)
+        faceGeoContext.lineWidth = 2
+        faceGeoContext.strokeStyle = '#00ff00'
+        faceGeoContext.stroke()
+    })
+}
+
+function addStat(label, value) {
+    const newStat = document.createElement('div')
+    newStat.classList.add('stat')
+    const newLabel = document.createElement('div')
+    newLabel.classList.add('label')
+    newLabel.innerHTML = label
+    const newValue = document.createElement('div')
+    newValue.classList.add('value')
+    newValue.innerHTML = value
+
+    newStat.appendChild(newLabel)
+    newStat.appendChild(newValue)
+
+    page.happySadStats.appendChild(newStat)
+}
+
+function addFaceStats(faceDetails) {
+    addStat(`Age Range`, `${faceDetails.AgeRange.Low} - ${faceDetails.AgeRange.High}`)
+    addStat(`Gender`, `${faceDetails.Gender.Value} ${faceDetails.Gender.Confidence.toFixed(0)}%`)
+    faceDetails.Emotions.forEach(e => {
+        addStat(`${e.Type}`, `${e.Confidence.toFixed(0)}%`)
+    })
+    addStat(`Eyeglasses`, `${faceDetails.Eyeglasses.Value}`)
+    addStat(`Sunglasses`, `${faceDetails.Sunglasses.Value}`)
+    addStat(`Smile`, `${faceDetails.Smile.Value} ${faceDetails.Smile.Confidence.toFixed(0)}%`)
+    addStat(`Mustache`, `${faceDetails.Mustache.Value} ${faceDetails.Mustache.Confidence.toFixed(0)}%`)
+    addStat(`Beard`, `${faceDetails.Beard.Value} ${faceDetails.Beard.Confidence.toFixed(0)}%`)
+    addStat(`Mouth Open`, `${faceDetails.MouthOpen.Value} ${faceDetails.MouthOpen.Confidence.toFixed(0)}%`)
+    addStat(`Eyes Open`, `${faceDetails.EyesOpen.Value} ${faceDetails.EyesOpen.Confidence.toFixed(0)}%`)
+}
+
+
+function doHappySadFaceAnalysis(imageURL) {
+    return fetch('/doFaceAnalysis', {
+        method: 'POST',
+        body: imageURL
+    }).then(response => {
+        if (!response.ok) {
+            console.log('error in doFaceAnalysisPost', response)
+        }
+        return response.json()
+    })
 }
 
 function handleCompare() {
@@ -275,7 +363,9 @@ function getPageElements() {
     pageObj.happySadPage = document.querySelector('.happy-sad-page')
     pageObj.happySadCameraIcon = document.querySelector('.happy-sad-page .bottom-menu .main-camera')
     pageObj.happySadCanvas = document.querySelector('.happy-sad-page .still')
+    pageObj.happySadFaceGeoCanvas = document.querySelector('.happy-sad-page .face-geo')
     pageObj.happySadCanvasDiv = document.querySelector('.happy-sad-page .happy-sad-still')
+    pageObj.happySadStats = document.querySelector('.happy-sad-page .stats')
     return pageObj
 }
 
