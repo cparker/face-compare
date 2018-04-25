@@ -42,8 +42,9 @@ input.compare {
 
 .preview .video-preview {
     width:100vw;
-    height:100vh;
+    /* height:100vh; */
     position:absolute;
+    top:6vh;
 }
 
 
@@ -72,7 +73,6 @@ input.compare {
 }
 
 .results .left-image canvas {
-    height:100%;
     width:100%;
     /* border: 2px solid green; */
 }
@@ -84,7 +84,6 @@ input.compare {
 }
 
 .results .right-image canvas {
-    height:100%;
     width:100%;
     /* border: 2px solid green; */
 }
@@ -126,7 +125,7 @@ input[type="submit"],
 }
 
 .main-menu {
-    display:none;
+    display:flex;
     flex-direction:column;
     height:100vh;
     justify-content:space-evenly;
@@ -139,7 +138,7 @@ input[type="submit"],
 }
 
 .happy-sad-page {
-    display:flex;
+    display:none;
     flex-direction:column;
 }
 

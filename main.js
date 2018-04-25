@@ -16,11 +16,8 @@ function init() {
 
     page.leftImageDivElm.style.height = `${page.sampleHeadshotElm.height * (divWidth / page.sampleHeadshotElm.width)}px`
     page.rightImageDivElm.style.height = `${page.sampleHeadshotElm.height * (divWidth / page.sampleHeadshotElm.width)}px`
-    // page.leftImageCanvasCtx.drawImage(page.sampleHeadshotElm, 0, 0, divWidth, computedHeight)
     page.leftImageCanvasCtx.drawImage(page.sampleHeadshotElm, 0, 0, page.leftImageCanvasElm.width, page.leftImageCanvasElm.height)
 
-    // page.rightImageCanvasElm.width = page.sampleHeadshotElm.width
-    // page.rightImageCanvasElm.height = page.sampleHeadshotElm.height
     page.rightImageCanvasCtx.drawImage(page.sampleHeadshotElm, 0, 0, page.rightImageCanvasElm.width, page.rightImageCanvasElm.height)
 
     page.leftImageDivElm.addEventListener('click', handleImageTouch)
@@ -34,6 +31,10 @@ function init() {
     page.happySadButton.addEventListener('click', handleHappySadMenu)
 
     page.happySadCameraIcon.addEventListener('click', handleHappySadTakePicture)
+
+    // this is hacky
+    page.leftImageCanvasElm.style.height = '100%'
+    page.rightImageCanvasElm.style.height = '100%'
 }
 
 const frontConstraints = {
@@ -80,9 +81,11 @@ async function handleHappySadTakePicture() {
     canvasCtx.drawImage(page.happySadVideoPreview, 0, 0)
     page.happySadVideoPreview.style.display = 'none'
 
+    page.happySadVideoPreview.pause()
+    page.happySadVideoPreview.srcObject.getTracks()[0].stop()
+
     console.log('drawingCanvasBEFORE', page.happySadFaceGeoCanvas.getContext)
     page.happySadFaceGeoCanvas.getContext('2d');
-
 
     const resultJSON = await doHappySadFaceAnalysis(page.happySadCanvas.toDataURL())
     console.log('resultJSON', resultJSON)
@@ -199,18 +202,13 @@ function handleCameraDir() {
     showVideoPreview()
 }
 
-/*
-imageFilesIcon.addEventListener('click', () => {
-    imageUpload.click()
-})
-*/
-
 function setImageIndexField() {
     imageIndexField.innerHTML = imageIndex === 0 ? 'first' : 'second'
 }
 
 function handleImageTouch(event) {
     chosenCanvas = event.srcElement
+    chosenCanvas.getContext('2d').clearRect(0,0,chosenCanvas.width, chosenCanvas.height)
     console.log('touched', event.srcElement.parentElement)
     showVideoPage()
     showVideoPreview()
@@ -237,13 +235,9 @@ function showResultsPage() {
 
     page.leftImageDivElm.style.height = `${page.sampleHeadshotElm.height * (divWidth / page.sampleHeadshotElm.width)}px`
     page.rightImageDivElm.style.height = `${page.sampleHeadshotElm.height * (divWidth / page.sampleHeadshotElm.width)}px`
-    // page.leftImageCanvasCtx.drawImage(page.sampleHeadshotElm, 0, 0, divWidth, computedHeight)
-    page.leftImageCanvasCtx.drawImage(page.sampleHeadshotElm, 0, 0, page.leftImageCanvasElm.width, page.leftImageCanvasElm.height)
 
-    // page.rightImageCanvasElm.width = page.sampleHeadshotElm.width
-    // page.rightImageCanvasElm.height = page.sampleHeadshotElm.height
-    page.rightImageCanvasCtx.drawImage(page.sampleHeadshotElm, 0, 0, page.rightImageCanvasElm.width, page.rightImageCanvasElm.height)
-
+    // page.leftImageCanvasCtx.drawImage(page.sampleHeadshotElm, 0, 0, page.leftImageCanvasElm.width, page.leftImageCanvasElm.height)
+    // page.rightImageCanvasCtx.drawImage(page.sampleHeadshotElm, 0, 0, page.rightImageCanvasElm.width, page.rightImageCanvasElm.height)
 }
 
 function showHappySadVideoPreview() {
@@ -276,53 +270,19 @@ function showVideoPreview() {
         })
 }
 
-/*
-mainCameraIcon.addEventListener('click', () => {
-    setImageIndexField()
-
-    resultsPage.style.display = 'none'
-    previewPage.style.display = 'flex'
-    videoPreview.style.width = `${document.width}px`
-
-})
-*/
-
 function takePicture() {
     const videoCurrentHeight = page.videoPreview.videoHeight
-    // const scaledVideoSnapHeight = videoCurrentHeight * (page.computedImageWidth / page.videoPreview.videoWidth)
+    // super hacky
+    chosenCanvas.style.height = null
     chosenCanvas.width = page.videoPreview.videoWidth
     chosenCanvas.height = page.videoPreview.videoHeight
     const newDivHeight = page.videoPreview.videoHeight * (page.computedImageWidth / page.videoPreview.videoWidth)
     page.leftImageDivElm.style.height = `${newDivHeight}px`
     page.rightImageDivElm.style.height = `${newDivHeight}px`
     const canvasCtx = chosenCanvas.getContext('2d')
-    // canvasCtx.drawImage(page.videoPreview, 0, 0, page.computedImageWidth, scaledVideoSnapHeight)
-    // canvasCtx.drawImage(page.videoPreview, 0, 0, chosenCanvas.width, chosenCanvas.height)
     canvasCtx.drawImage(page.videoPreview, 0, 0)
     showResultsPage()
 }
-
-// HANDLE TAKING SNAPSHOT
-/*
-page.videoPreview.addEventListener('click', () => {
-    console.log('SNAP')
-    const videoCurrentHeight = page.videoPreview.videoHeight
-    const scaledVideoSnapHeight = videoCurrentHeight * (divWidth / videoPreview.videoWidth)
-    let canvasElm = imageIndex === 0 ? leftImageCanvasElm : rightImageCanvasElm
-    let canvasCtx = imageIndex === 0 ? leftImageCanvasCtx : rightImageCanvasCtx
-    canvasElm.height = scaledVideoSnapHeight
-    canvasCtx.drawImage(videoPreview, 0, 0, divWidth, scaledVideoSnapHeight)
-    if (imageIndex === 0) {
-        imageIndex++
-        setImageIndexField()
-    } else {
-        resultsPage.style.display = 'flex'
-        previewPage.style.display = 'none'
-        imageIndex = 0
-    }
-})
-
-*/
 
 function getNewImageWidth(img, newHeight) {
     return img.width * (newHeight / img.height)
@@ -348,7 +308,7 @@ function getPageElements() {
     pageObj.rightImageCanvasCtx = pageObj.rightImageCanvasElm.getContext('2d')
     pageObj.resultsPage = document.querySelector('.results-column')
     pageObj.previewPage = document.querySelector('.preview')
-    pageObj.videoPreview = document.querySelector('.video-preview')
+    pageObj.videoPreview = document.querySelector('.preview .video-preview')
     pageObj.happySadVideoPreview = document.querySelector('.happy-sad-page video')
     pageObj.mainCameraIcon = document.querySelector('.preview .bottom-menu .main-camera')
     pageObj.imageFilesIcon = document.querySelector('.bottom-menu .image-files')
