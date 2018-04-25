@@ -17,20 +17,16 @@ function init() {
     page.leftImageDivElm.style.height = `${page.sampleHeadshotElm.height * (divWidth / page.sampleHeadshotElm.width)}px`
     page.rightImageDivElm.style.height = `${page.sampleHeadshotElm.height * (divWidth / page.sampleHeadshotElm.width)}px`
     page.leftImageCanvasCtx.drawImage(page.sampleHeadshotElm, 0, 0, page.leftImageCanvasElm.width, page.leftImageCanvasElm.height)
-
     page.rightImageCanvasCtx.drawImage(page.sampleHeadshotElm, 0, 0, page.rightImageCanvasElm.width, page.rightImageCanvasElm.height)
-
     page.leftImageDivElm.addEventListener('click', handleImageTouch)
     page.rightImageDivElm.addEventListener('click', handleImageTouch)
     page.cameraDirectionBtn.addEventListener('click', handleCameraDir)
-
     page.mainCameraIcon.addEventListener('click', takePicture)
     page.compareBtn.addEventListener('click', handleCompare)
-
     page.compareMenuButton.addEventListener('click', handleCompareMenu)
     page.happySadButton.addEventListener('click', handleHappySadMenu)
-
     page.happySadCameraIcon.addEventListener('click', handleHappySadTakePicture)
+    page.burger.addEventListener('click', handleBurger)
 
     // this is hacky
     page.leftImageCanvasElm.style.height = '100%'
@@ -51,15 +47,43 @@ const backConstraints = {
     }
 }
 
+function hideAllPages() {
+    page.mainMenuPage.style.display = 'none'
+    page.happySadPage.style.display = 'none'
+    page.resultsPage.style.display = 'none'
+    page.previewPage.style.display = 'none'
+}
+
+function handleBurger() {
+    console.log('burger')
+    stopAllVideo()
+    hideAllPages()
+    page.mainMenuPage.style.display = 'flex'
+}
+
 function handleCompareMenu() {
     page.mainMenuPage.style.display = 'none'
+    hideAllPages()
     showResultsPage()
 }
 
+function handleHappySadRedo() {
+    handleHappySadMenu()
+}
+
 function handleHappySadMenu() {
+    hideAllPages()
     page.mainMenuPage.style.display = 'none'
     page.happySadPage.style.display = 'flex'
+    page.redo.addEventListener('click', handleHappySadRedo)
+    clearStats()
     showHappySadVideoPreview()
+}
+
+function clearStats() {
+    while (page.happySadStats.firstChild) {
+        page.happySadStats.removeChild(page.happySadStats.firstChild)
+    }
 }
 
 async function handleHappySadTakePicture() {
@@ -208,7 +232,7 @@ function setImageIndexField() {
 
 function handleImageTouch(event) {
     chosenCanvas = event.srcElement
-    chosenCanvas.getContext('2d').clearRect(0,0,chosenCanvas.width, chosenCanvas.height)
+    chosenCanvas.getContext('2d').clearRect(0, 0, chosenCanvas.width, chosenCanvas.height)
     console.log('touched', event.srcElement.parentElement)
     showVideoPage()
     showVideoPreview()
@@ -241,6 +265,8 @@ function showResultsPage() {
 }
 
 function showHappySadVideoPreview() {
+    page.happySadVideoPreview.style.display = 'block'
+    page.happySadStill.style.display = 'none'
     const constraints = cameraFrontBack === 'front' ? frontConstraints : backConstraints
     navigator.mediaDevices.getUserMedia(constraints)
         .then((stream) => {
@@ -270,6 +296,15 @@ function showVideoPreview() {
         })
 }
 
+function stopAllVideo() {
+    if (page.videoPreview.srcObject && page.videoPreview.srcObject.getTracks()) {
+        page.videoPreview.srcObject.getTracks()[0].stop()
+    }
+    if (page.happySadVideoPreview.srcObject && page.happySadVideoPreview.srcObject.getTracks()) {
+        page.happySadVideoPreview.srcObject.getTracks()[0].stop()
+    }
+}
+
 function takePicture() {
     const videoCurrentHeight = page.videoPreview.videoHeight
     // super hacky
@@ -281,6 +316,8 @@ function takePicture() {
     page.rightImageDivElm.style.height = `${newDivHeight}px`
     const canvasCtx = chosenCanvas.getContext('2d')
     canvasCtx.drawImage(page.videoPreview, 0, 0)
+    page.videoPreview.srcObject.getTracks()[0].stop()
+    page.videoPreview.pause()
     showResultsPage()
 }
 
@@ -323,9 +360,12 @@ function getPageElements() {
     pageObj.happySadPage = document.querySelector('.happy-sad-page')
     pageObj.happySadCameraIcon = document.querySelector('.happy-sad-page .bottom-menu .main-camera')
     pageObj.happySadCanvas = document.querySelector('.happy-sad-page .still')
+    pageObj.happySadStill = document.querySelector('.happy-sad-page .happy-sad-still')
     pageObj.happySadFaceGeoCanvas = document.querySelector('.happy-sad-page .face-geo')
     pageObj.happySadCanvasDiv = document.querySelector('.happy-sad-page .happy-sad-still')
     pageObj.happySadStats = document.querySelector('.happy-sad-page .stats')
+    pageObj.burger = document.querySelector('.top-title-bar .burger')
+    pageObj.redo = document.querySelector('.top-title-bar .redo')
     return pageObj
 }
 

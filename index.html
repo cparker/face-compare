@@ -16,23 +16,27 @@
 
 <body>
     <img class='sample-headshot' src='/profile.jpg' style='display:none' />
+    <div class='top-title-bar'>
+        <div class='burger'><i class='fas fa-bars fa-2x'></i></div>
+        <h2 class='top-title'>Face Match</h2>
+        <div class='redo'><i class='fas fa-redo fa-2x' data-fa-transform='flip-h'></i></div>
+    </div>
 
     <!-- MAIN MENU PAGE -->
     <div class='main-menu'>
         <div class='compare-faces menu-item'>
-            Compare Faces
+            <span>Compare Faces</span>
         </div>
         <div class='happy-sad menu-item'>
-            Happy, Sad, or Confused
+            <span>Happy, Sad, or Confused</span>
         </div>
         <div class='picture-this menu-item'>
-            Picture This
+            <span>Picture This</span>
         </div>
     </div>
 
     <!-- HAPPY SAD PAGE -->
     <div class='happy-sad-page'>
-        <h2 class='top-title'>Happy, Sad, Confused</h2>
         <div class='happy-sad-still'>
             <canvas class='still'></canvas>
             <canvas class='face-geo'></canvas>
@@ -60,7 +64,6 @@
 
     <!-- SIDE BY SIDE PAGE -->
     <div class='results-column'>
-        <h2 class='top-title'>Face Match</h2>
         <div class='results'>
             <div class='left-image'>
                 <canvas></canvas>

@@ -19,6 +19,14 @@ input.compare {
     margin:0.4em;
 }
 
+.top-title-bar {
+    display:flex;
+    flex-direction:row;
+    justify-content:space-between;
+    position:relative;
+    padding:0.2em;
+}
+
 .top-title {
     text-align:center;
     margin-top:0.2em;
@@ -88,14 +96,23 @@ input.compare {
     /* border: 2px solid green; */
 }
 
-.bottom-menu {
+.happy-sad-page .bottom-menu {
     position:absolute;
-    bottom: 15px;
     right: 10px;
     width:100vw;
     display:flex;
     flex-direction:row;
-    bottom:5px;
+    bottom:2%;
+    justify-content:space-around;
+}
+
+.preview .bottom-menu {
+    position:absolute;
+    right: 10px;
+    width:100vw;
+    display:flex;
+    flex-direction:row;
+    bottom:8%;
     justify-content:space-around;
 }
 
@@ -131,10 +148,29 @@ input[type="submit"],
     justify-content:space-evenly;
 }
 
+
 .menu-item {
     font-size:2.0em;
-    border-top:1px solid gray;
+    border:1px solid gray;
     text-align:center;
+    flex:1;
+}
+
+.menu-item:nth-child(1) {
+    background-color:#008cff;
+}
+
+.menu-item:nth-child(2) {
+    background-color:#54abf7;
+}
+
+.menu-item:nth-child(3) {
+    background-color:#96c8f2;
+}
+
+.menu-item span {
+    position:relative;
+    top:38%;
 }
 
 .happy-sad-page {
