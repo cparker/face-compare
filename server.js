@@ -31,6 +31,17 @@ app.use(bodyParser.raw({
     limit: '500mb'
 }))
 
+// cors headers, to allow cross-site post
+app.use((req, res, next) => {
+    console.log(`req.headers.origin ${req.headers.origin}`)
+    res.header("Access-Control-Allow-Credentials", "true")
+    // todo check origin against a list so its not free for all
+    res.header("Access-Control-Allow-Origin", `${req.headers.origin}`);
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, contentType");
+    res.header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE");
+    next();
+})
+
 app.post('/doFaceAnalysis', async (req, res, next) => {
     const postText = req.body.toString('utf-8')
     const base64Text = postText.split('base64,')[1]
